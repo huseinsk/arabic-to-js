@@ -110,13 +110,6 @@ const commands = [
   { lang: "all", mode: "project", regex: /سوي مشروع/i, type: "project_basic" }
 ];
 
-// 10000 أمر (ممكن تزيدها لاحقاً)
-const hugeCommands = [];
-for (let i = 0; i < 10000; i++) {
-  hugeCommands.push({ lang: "all", mode: "general", regex: new RegExp(`امر${i}`, "i"), type: `huge_${i}` });
-}
-commands.push(...hugeCommands);
-
 const history = JSON.parse(localStorage.getItem("history") || "[]");
 const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
 
@@ -277,10 +270,6 @@ function generate(type, lang, a, b) {
 </html>`;
   }
 
-  if (type.startsWith("huge_")) {
-    return "// أمر كبير موجود لكن لم يتم تعريفه فعلياً (يمكنك إضافة كود هنا)";
-  }
-
   return "// لا يوجد تحويل لهذا الأمر";
 }
 
@@ -289,4 +278,4 @@ showHistory();
 </script>
 
 </body>
-  </html>
+</html>
