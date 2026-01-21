@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>محول العربية إلى JavaScript - النسخة الأقوى</title>
+<style>
+  :root{
+    --bg:#0b1020;
+    --card:#0f172a;
+    --text:#e5e7eb;
+    --muted:#94a3b8;
+    --accent:#22c55e;
+    --accent2:#38bdf8;
+    --danger:#ef4444;
+    --shadow: 0 12px 30px rgba(0,0,0,0.55);
+    --border: rgba(255,255,255,0.12);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family: "Tahoma", sans-serif;
+    background: linear-gradient(135deg, #0b1020 0%, #0f172a 100%);
+    color: var(--text);
+  }
+  .container{
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    margin-bottom: 20px;
+    flex-wrap:wrap;
+  }
+  h1{font-size: 22px; margin:0;}
+  .tag{
+    background: rgba(255,255,255,0.06);
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .card{
+    background: var(--card);
+    border-radius: 18px;
+    padding: 18px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    margin-bottom: 18px;
+  }
+  textarea{
+    width:100%;
+    min-height: 170px;
+    resize: vertical;
+    background: rgba(2,6,23,0.8);
+    color: var(--accent2);
+    border: 1px solid rgba(56,189,248,0.5);
+    border-radius: 12px;
+    padding: 14px;
+    font-size: 14px;
+    outline:none;
+  }
+  textarea:focus{border-color: rgba(34,197,94,0.8);}
+  .row{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top: 12px;
+  }
+  button{
+    cursor:pointer;
+    border:none;
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 14px;
+    color:white;
+    background: var(--accent);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.35);
+  }
+  button.secondary{background: rgba(56,189,248,0.9);}
+  button.danger{background: var(--danger);}
+  pre{
+    background: rgba(2,6,23,0.8);
+    color: #d1d5db;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    overflow:auto;
+    white-space: pre-wrap;
+  }
+  .footer{
+    text-align:center;
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 10px;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  @media (max-width: 760px){
+    .grid{grid-template-columns: 1fr;}
+  }
+  .badge{
+    display:inline-block;
+    padding:6px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 12px;
+    background: rgba(255,255,255,0.05);
+  }
+  .tabs{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  .tab{
+    padding: 8px 12px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.05);
+    cursor:pointer;
+    color: var(--muted);
+  }
+  .tab.active{
+    background: rgba(34,197,94,0.25);
+    border-color: rgba(34,197,94,0.45);
+    color: white;
+  }
+  .help{
+    display:none;
+  }
+  .help.active{display:block;}
+  .split{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:10px;
+  }
+  .input-small{
+    width:100%;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: rgba(2,6,23,0.8);
+    color: var(--text);
+    padding: 10px;
+    outline:none;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div>
+      <h1>محول العربية → JavaScript (النسخة الأقوى)</h1>
+      <div class="tag">واجهة حديثة + أوامر متقدمة + تشغيل + حفظ + تصدير</div>
+    </div>
+    <div class="badge">GitHub Pages</div>
+  </header>
+
+  <div class="card">
+    <div class="tabs">
+      <div class="tab active" data-tab="main">المحول</div>
+      <div class="tab" data-tab="help">قائمة الأوامر</div>
+      <div class="tab" data-tab="projects">المشاريع</div>
+    </div>
+
+    <div id="main" class="tab-content">
+      <div class="grid">
+        <div>
+          <h3>اكتب أوامرك العربية هنا</h3>
+          <textarea id="input" placeholder="مثال: اطبع مرحبا"></textarea>
+          <div class="row">
+            <button onclick="convert()">تحويل</button>
+            <button class="secondary" onclick="runCode()">تشغيل</button>
+            <button class="secondary" onclick="saveLocal()">حفظ تلقائي</button>
+            <button class="danger" onclick="clearAll()">مسح</button>
+          </div>
+
+          <div class="split">
+            <input id="projectName" class="input-small" placeholder="اسم المشروع (لحفظ/تحميل)" />
+            <button class="secondary" onclick="saveProject()">حفظ مشروع</button>
+            <button class="secondary" onclick="loadProject()">تحميل مشروع</button>
+          </div>
+
+          <div class="split">
+            <button class="secondary" onclick="downloadJS()">تحميل كـ script.js</button>
+            <button class="secondary" onclick="downloadProject()">تحميل مشروع JSON</button>
+          </div>
+        </div>
+
+        <div>
+          <h3>النتيجة (JavaScript)</h3>
+          <pre id="output">النتيجة ستظهر هنا بعد الضغط على تحويل</pre>
+          <div class="row">
+            <button class="secondary" onclick="copyOutput()">نسخ</button>
+            <button class="secondary" onclick="clearOutput()">مسح النتيجة</button>
+          </div>
+
+          <h3>Console (تشغيل الكود)</h3>
+          <pre id="console">Console: لا شيء حتى الآن</pre>
+        </div>
+      </div>
+    </div>
+
+    <div id="help" class="tab-content help">
+      <h3>قائمة الأوامر المدعومة</h3>
+      <pre>
+1) اطبع <نص>
+   مثال: اطبع مرحبا
+
+2) عرّف متغير <اسم> يساوي <قيمة>
+   مثال: عرّف متغير x يساوي 5
+
+3) إذا <شرط> نفّذ <كود>
+   مثال: إذا x أكبر من 3 نفّذ اطبع نعم
+
+4) كرّر <عدد> مرات اطبع <نص>
+   مثال: كرّر 5 مرات اطبع هلا
+
+5) دالة <اسم> ( <باراميتر> ) نفّذ <كود>
+   مثال: دالة تحية(اسم) نفّذ اطبع مرحبا + اسم
+
+6) ارجع <قيمة>
+   مثال: ارجع 5
+
+7) حسابات:
+   - جمع: 5 + 3
+   - طرح: 10 - 2
+   - ضرب: 4 * 3
+   - قسمة: 8 / 2
+
+8) شرط متقدم:
+   - أكبر من: >
+   - أصغر من: <
+   - يساوي: ==
+   - غير يساوي: !=
+      مثال: إذا 5 > 3 نفّذ اطبع صح
+      </pre>
+    </div>
+
+    <div id="projects" class="tab-content help">
+      <h3>المشاريع المحفوظة</h3>
+      <pre id="projectsList">لا يوجد مشاريع محفوظة بعد</pre>
+    </div>
+  </div>
+
+  <div class="footer">
+    تم التطوير بواسطة ChatGPT • يعمل على GitHub Pages
+  </div>
+</div>
+
+<script>
+const output = document.getElementById("output");
+const input = document.getElementById("input");
+const consoleEl = document.getElementById("console");
+const projectsList = document.getElementById("projectsList");
+
+function logConsole(msg){
+  consoleEl.textContent = "Console: " + msg;
+}
+
+function convert(){
+  let text = input.value.trim();
+  if(!text) return output.textContent = "اكتب أمرًا عربيًا ثم اضغط تحويل";
+
+  // دعم أوامر متعددة (سطر واحد فقط الآن)
+  // 1) اطبع
+  if(text.startsWith("اطبع ")){
+    let value = text.replace("اطبع ", "").trim();
+    output.textContent = `console.log("${value}");`;
+    return;
+  }
+
+  // 2) تعريف متغير
+  if(text.startsWith("عرّف متغير ")){
+    let parts = text.replace("عرّف متغير ", "").split(" يساوي ");
+    if(parts.length === 2){
+      let name = parts[0].trim();
+      let value = parts[1].trim();
+      output.textContent = `let ${name} = ${value};`;
+      return;
+    }
+  }
+
+  // 3) إذا
+  if(text.startsWith("إذا ")){
+    let parts = text.replace("إذا ", "").split(" نفّذ ");
+    if(parts.length === 2){
+      let condition = parts[0].trim();
+      let code = parts[1].trim();
+      output.textContent = `if(${condition}){ console.log("${code}"); }`;
+      return;
+    }
+  }
+
+  // 4) كرّر
+  if(text.startsWith("كرّر ")){
+    let parts = text.replace("كرّر ", "").split(" مرات ");
+    if(parts.length === 2){
+      let count = parts[0].trim();
+      let msg = parts[1].replace("اطبع ", "").trim();
+      output.textContent = `
+for(let i=0; i<${count}; i++){
+  console.log("${msg}");
+}`;
+      return;
+    }
+  }
+
+  // 5) دالة
+  if(text.startsWith("دالة ")){
+    let parts = text.replace("دالة ", "").split(" نفّذ ");
+    if(parts.length === 2){
+      let header = parts[0].trim();
+      let code = parts[1].trim();
+      // مثال: تحية(اسم)
+      let name = header.split("(")[0].trim();
+      let param = header.split("(")[1]?.split(")")[0]?.trim() || "";
+      output.textContent = `function ${name}(${param}){ console.log("${code}"); }`;
+      return;
+    }
+  }
+
+  // 6) ارجع
+  if(text.startsWith("ارجع ")){
+    let val = text.replace("ارجع ", "").trim();
+    output.textContent = `return ${val};`;
+    return;
+  }
+
+  output.textContent = "لم يتم التعرف على الأمر. جرّب أمرًا من الأوامر المدعومة.";
+}
+
+function runCode(){
+  try{
+    let code = output.textContent;
+    if(!code || code.includes("لم يتم التعرف")) return;
+    let func = new Function(code + "\nreturn true;");
+    func();
+    logConsole("تم التشغيل بنجاح");
+  } catch(e){
+    logConsole("خطأ: " + e.message);
+  }
+}
+
+function copyOutput(){
+  navigator.clipboard.writeText(output.textContent);
+  alert("تم النسخ");
+}
+
+function downloadJS(){
+  let code = output.textContent;
+  let blob = new Blob([code], {type:"text/javascript"});
+  let url = URL.createObjectURL(blob);
+  let a = document.createElement("a");
+  a.href = url;
+  a.download = "script.js";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function saveLocal(){
+  localStorage.setItem("arabicToJsInput", input.value);
+  alert("تم الحفظ");
+}
+
+function clearAll(){
+  input.value = "";
+  output.textContent = "النتيجة ستظهر هنا بعد الضغط على تحويل";
+  localStorage.removeItem("arabicToJsInput");
+  logConsole("تم المسح");
+}
+
+function clearOutput(){
+  output.textContent = "";
+}
+
+function saveProject(){
+  let name = document.getElementById("projectName").value.trim();
+  if(!name) return alert("اكتب اسم المشروع");
+  let project = {
+    name,
+    input: input.value,
+    output: output.textContent
+  };
+  localStorage.setItem("project_" + name, JSON.stringify(project));
+  alert("تم حفظ المشروع");
+  loadProjects();
+}
+
+function loadProject(){
+  let name = document.getElementById("projectName").value.trim();
+  if(!name) return alert("اكتب اسم المشروع");
+  let project = localStorage.getItem("project_" + name);
+  if(!project) return alert("ماكو مشروع بهذا الاسم");
+  project = JSON.parse(project);
+  input.value = project.input;
+  output.textContent = project.output;
+  alert("تم تحميل المشروع");
+}
+
+function downloadProject(){
+  let name = document.getElementById("projectName").value.trim() || "project";
+  let project = {
+    name,
+    input: input.value,
+    output: output.textContent
+  };
+  let blob = new Blob([JSON.stringify(project, null, 2)], {type:"application/json"});
+  let url = URL.createObjectURL(blob);
+  let a = document.createElement("a");
+  a.href = url;
+  a.download = name + ".json";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function loadProjects(){
+  let list = [];
+  for(let i=0; i<localStorage.length; i++){
+    let key = localStorage.key(i);
+    if(key.startsWith("project_")){
+      list.push(key.replace("project_", ""));
+    }
+  }
+  projectsList.textContent = list.length ? list.join("\n") : "لا يوجد مشاريع محفوظة بعد";
+}
+
+window.addEventListener("load", () => {
+  let saved = localStorage.getItem("arabicToJsInput");
+  if(saved) input.value = saved;
+  loadProjects();
+});
+
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+    document.getElementById(tab.dataset.tab).classList.add("active");
+  });
+});
+</script>
+
+</body>
+  </html>
