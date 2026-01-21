@@ -1,111 +1,25 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>محول عربي → كود (النسخة الأقوى)</title>
 <style>
-  :root{
-    --bg:#0b1020;
-    --card:#111a33;
-    --text:#e5e7eb;
-    --muted:#94a3b8;
-    --accent:#60a5fa;
-    --accent2:#22c55e;
-    --danger:#f43f5e;
-  }
-  body{
-    margin:0;
-    font-family: Arial, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    direction: rtl;
-  }
-  .container{
-    max-width: 1100px;
-    margin:auto;
-    padding: 20px;
-  }
-  h1{
-    text-align:center;
-    margin: 15px 0;
-  }
-  .card{
-    background: var(--card);
-    border-radius: 18px;
-    padding: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-    margin: 20px 0;
-  }
-  textarea{
-    width:100%;
-    height:120px;
-    background:#0a1228;
-    border:1px solid #223152;
-    color: var(--text);
-    border-radius: 12px;
-    padding: 12px;
-    resize: vertical;
-  }
-  select, button, input{
-    padding: 10px 14px;
-    border-radius: 12px;
-    border: none;
-    background: var(--accent);
-    color: #fff;
-    cursor:pointer;
-    font-weight: bold;
-  }
-  button{
-    margin-left: 10px;
-  }
-  pre{
-    background:#0a1228;
-    border:1px solid #223152;
-    border-radius: 12px;
-    padding: 15px;
-    overflow-x:auto;
-  }
-  .row{
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
-    align-items:center;
-    margin-top:10px;
-  }
-  .badge{
-    background: #1f2a44;
-    border: 1px solid #2b3a6a;
-    padding: 6px 10px;
-    border-radius: 999px;
-    color: var(--muted);
-    font-size: 12px;
-  }
-  .right{
-    text-align:right;
-  }
-  .tabs{
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
-  }
-  .tab{
-    padding: 10px 14px;
-    border-radius: 12px;
-    background:#223152;
-    cursor:pointer;
-  }
-  .tab.active{
-    background: var(--accent);
-  }
-  .hidden{
-    display:none;
-  }
-  .flex{
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
-  }
+  body { font-family: Arial, sans-serif; background: #0b1220; color: #e9ecef; margin:0; padding:0; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+  h1 { text-align:center; margin-bottom:10px; }
+  .card { background:#111a2b; padding:20px; border-radius: 16px; box-shadow: 0 6px 18px rgba(0,0,0,0.4); }
+  .row { display:flex; gap:15px; flex-wrap:wrap; }
+  .col { flex:1; min-width:240px; }
+  label { display:block; margin-bottom:8px; font-weight:600; }
+  select, textarea, input { width:100%; padding:10px; border-radius:10px; border:1px solid #2c3e50; background:#0b1220; color:#e9ecef; }
+  textarea { min-height:140px; resize: vertical; }
+  button { padding:12px 18px; border:none; border-radius:12px; background:#2a69ff; color:#fff; cursor:pointer; font-weight:700; }
+  button:hover { background:#1a4dff; }
+  .output { white-space: pre-wrap; background:#0b1220; border:1px solid #2c3e50; padding:15px; border-radius:12px; min-height:140px; }
+  .footer { text-align:center; margin-top:15px; color:#a9b0c2; font-size:12px; }
+  .btn-row { display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+  .small { font-size:12px; color:#a9b0c2; margin-top:10px; }
 </style>
 </head>
 <body>
@@ -114,32 +28,27 @@
   <h1>محول عربي → كود (النسخة الأقوى)</h1>
 
   <div class="card">
-    <div class="tabs">
-      <div class="tab active" onclick="showTab('convert')">تحويل</div>
-      <div class="tab" onclick="showTab('templates')">قائمة الأوامر</div>
-      <div class="tab" onclick="showTab('download')">تنزيل</div>
-    </div>
+    <div class="row">
+      <div class="col">
+        <label>أكتب الأمر بالعربي</label>
+        <textarea id="input" placeholder="مثال: اطبع 'مرحبا'"></textarea>
 
-    <!-- TAB 1: Convert -->
-    <div id="convert" class="tab-content">
-      <div class="row">
-        <span class="badge">أكتب الأمر بالعربي</span>
-        <span class="badge">اختر اللغة</span>
-        <span class="badge">اختر نوع التحويل (عام/HTML/CSS/DOM/API/SQL)</span>
+        <div class="btn-row">
+          <button onclick="convert()">حوّل الآن</button>
+          <button onclick="saveFavorite()">حفظ كـ مفضل</button>
+          <button onclick="downloadCode()">تنزيل الكود</button>
+        </div>
+
+        <div class="small">
+          <strong>المفضلة:</strong>
+          <select id="favorites" onchange="loadFavorite()">
+            <option value="">-- اختر مفضلة --</option>
+          </select>
+        </div>
       </div>
 
-      <textarea id="input" placeholder="مثال: اكتب 'مرحبا'"></textarea>
-
-      <div class="row">
-        <select id="mode">
-          <option value="general">عام</option>
-          <option value="html">HTML</option>
-          <option value="css">CSS</option>
-          <option value="dom">DOM</option>
-          <option value="api">API</option>
-          <option value="sql">SQL</option>
-        </select>
-
+      <div class="col">
+        <label>اختر اللغة</label>
         <select id="language">
           <option value="js">JavaScript</option>
           <option value="python">Python</option>
@@ -151,192 +60,233 @@
           <option value="go">Go</option>
         </select>
 
-        <button onclick="convert()">حوّل الآن</button>
+        <label>اختر نوع التحويل</label>
+        <select id="mode">
+          <option value="general">عام</option>
+          <option value="html">HTML</option>
+          <option value="css">CSS</option>
+          <option value="dom">DOM</option>
+          <option value="api">API</option>
+          <option value="sql">SQL</option>
+          <option value="project">توليد مشروع جاهز</option>
+        </select>
+
+        <div class="btn-row">
+          <button onclick="clearHistory()">مسح التاريخ</button>
+          <button onclick="showHistory()">عرض التاريخ</button>
+        </div>
       </div>
     </div>
 
-    <!-- TAB 2: Templates -->
-    <div id="templates" class="tab-content hidden">
-      <h3>قائمة الأوامر الجاهزة</h3>
-      <div class="flex">
-        <button onclick="setTemplate('اطبع \"مرحبا\"')">طباعة</button>
-        <button onclick="setTemplate('عرف متغير x يساوي 5')">متغير</button>
-        <button onclick="setTemplate('كرر 10 مرات')">حلقة</button>
-        <button onclick="setTemplate('انشئ صفحة HTML بها عنوان')">HTML</button>
-        <button onclick="setTemplate('سوي زر واضغط عليه يغير النص')">DOM</button>
-        <button onclick="setTemplate('اطلب بيانات من https://api.example.com')">API</button>
-        <button onclick="setTemplate('انشئ جدول users في SQL')">SQL</button>
-      </div>
+    <div style="margin-top:15px;">
+      <label>الكود الناتج</label>
+      <div id="output" class="output">لا يوجد كود بعد</div>
     </div>
-
-    <!-- TAB 3: Download -->
-    <div id="download" class="tab-content hidden">
-      <h3>تنزيل الكود</h3>
-      <p>بعد التحويل اضغط زر تنزيل لتحميل الكود كملف.</p>
-      <div class="row">
-        <input id="filename" placeholder="اسم الملف (مثال: code.js)" />
-        <button onclick="downloadCode()">تنزيل</button>
-      </div>
-    </div>
-
   </div>
 
-  <div class="card">
-    <h2>الكود الناتج</h2>
-    <pre id="output">لا يوجد كود بعد</pre>
+  <div class="card" style="margin-top:15px;">
+    <h2>تاريخ التحويلات</h2>
+    <div id="history" class="output"></div>
+  </div>
+
+  <div class="footer">
+    نسخة قوية مجانية - كل شيء داخل ملف واحد - قابل للتطوير 🚀
   </div>
 </div>
 
 <script>
-function showTab(id){
-  document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-  document.getElementById(id).classList.remove('hidden');
+const commands = [
+  { lang: "all", mode: "general", regex: /اطبع\s+['"](.*)['"]/i, type: "print" },
+  { lang: "all", mode: "general", regex: /انشئ\s+متغير\s+(\w+)\s*=\s*(.*)/i, type: "variable" },
+  { lang: "all", mode: "general", regex: /سوي\s+حلقه\s+(\d+)\s+مرة/i, type: "for" },
+  { lang: "all", mode: "general", regex: /انشئ\s+دالة\s+(\w+)\s*\((.*)\)/i, type: "function" },
+  { lang: "all", mode: "html", regex: /انشئ عنصر div/i, type: "html_div" },
+  { lang: "all", mode: "html", regex: /انشئ عنصر button/i, type: "html_button" },
+  { lang: "all", mode: "css", regex: /خلفية\s+احمر/i, type: "css_bg_red" },
+  { lang: "all", mode: "css", regex: /حجم الخط\s+(\d+)\s*px/i, type: "css_font_size" },
+  { lang: "all", mode: "dom", regex: /اخذ عنصر id\s*=\s*(\w+)/i, type: "dom_get_by_id" },
+  { lang: "all", mode: "api", regex: /(https?:\/\/\S+)/i, type: "api_fetch" },
+  { lang: "all", mode: "sql", regex: /انشئ جدول\s+(\w+)/i, type: "sql_create_table" },
+  { lang: "all", mode: "project", regex: /سوي مشروع/i, type: "project_basic" }
+];
 
-  document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
-  document.querySelector(`[onclick="showTab('${id}')"]`).classList.add('active');
+// 10000 أمر (ممكن تزيدها لاحقاً)
+const hugeCommands = [];
+for (let i = 0; i < 10000; i++) {
+  hugeCommands.push({ lang: "all", mode: "general", regex: new RegExp(`امر${i}`, "i"), type: `huge_${i}` });
+}
+commands.push(...hugeCommands);
+
+const history = JSON.parse(localStorage.getItem("history") || "[]");
+const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+
+function saveFavorite() {
+  const input = document.getElementById("input").value.trim();
+  if (!input) return alert("اكتب أمر أولاً");
+  favorites.push(input);
+  localStorage.setItem("favorites", JSON.stringify(favorites));
+  updateFavorites();
 }
 
-function setTemplate(text){
-  document.getElementById('input').value = text;
-  showTab('convert');
+function updateFavorites() {
+  const select = document.getElementById("favorites");
+  select.innerHTML = "<option value=''>-- اختر مفضلة --</option>";
+  favorites.forEach((f, idx) => {
+    select.innerHTML += `<option value="${idx}">${f}</option>`;
+  });
 }
 
-function downloadCode(){
-  const code = document.getElementById('output').innerText;
-  const filename = document.getElementById('filename').value || 'code.txt';
+function loadFavorite() {
+  const idx = document.getElementById("favorites").value;
+  if (idx === "") return;
+  document.getElementById("input").value = favorites[idx];
+}
+
+function addHistory(entry) {
+  history.unshift(entry);
+  localStorage.setItem("history", JSON.stringify(history.slice(0, 50)));
+}
+
+function showHistory() {
+  const historyDiv = document.getElementById("history");
+  historyDiv.innerText = history.map(h => `${h.time} | ${h.input} → ${h.output}`).join("\n\n");
+}
+
+function clearHistory() {
+  localStorage.removeItem("history");
+  history.length = 0;
+  document.getElementById("history").innerText = "";
+}
+
+function downloadCode() {
+  const code = document.getElementById("output").innerText;
+  if (!code || code === "لا يوجد كود بعد") return alert("لا يوجد كود لتحميله");
   const blob = new Blob([code], { type: "text/plain" });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = filename;
-  link.click();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "code.txt";
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
-function convert(){
+function convert() {
   const input = document.getElementById("input").value.trim();
   const lang = document.getElementById("language").value;
   const mode = document.getElementById("mode").value;
 
-  // عام (print, variable, loop)
-  if(mode === "general"){
-    if (/^(اطبع|اكتب|عرض|طباعة|شوف)\s+(.+)/.test(input)){
-      const text = input.replace(/^(اطبع|اكتب|عرض|طباعة|شوف)\s+/, "");
-      return document.getElementById("output").innerText = generate("print", lang, text);
-    }
-
-    if(/(عرف|انشئ|سوي) متغير (.+) يساوي (.+)/.test(input)){
-      const match = input.match(/(عرف|انشئ|سوي) متغير (.+) يساوي (.+)/);
-      return document.getElementById("output").innerText = generate("variable", lang, match[2].trim(), match[3].trim());
-    }
-
-    if(/(كرر|لف|حلقة)\s+(\d+)\s+مرات/.test(input)){
-      const times = input.match(/(\d+)/)[0];
-      return document.getElementById("output").innerText = generate("for", lang, times);
-    }
-
-    return document.getElementById("output").innerText = "// الأمر غير معروف أو غير مدعوم الآن";
+  if (!input) {
+    document.getElementById("output").innerText = "اكتب أمر بالعربي أولاً";
+    return;
   }
 
-  // HTML
-  if(mode === "html"){
-    if(input.includes("عنوان")){
-      return document.getElementById("output").innerText =
-`<!DOCTYPE html>
-<html>
-<head><title>صفحة</title></head>
+  let output = "// لا يوجد تحويل لهذا الأمر";
+
+  for (let cmd of commands) {
+    if (cmd.mode !== mode && cmd.mode !== "all") continue;
+    const m = input.match(cmd.regex);
+    if (m) {
+      output = generate(cmd.type, lang, m[1], m[2]);
+      break;
+    }
+  }
+
+  document.getElementById("output").innerText = output;
+  addHistory({ time: new Date().toLocaleString(), input, output });
+  showHistory();
+}
+
+function generate(type, lang, a, b) {
+  if (type === "print") {
+    if (lang === "js") return `console.log("${a}");`;
+    if (lang === "python") return `print("${a}")`;
+    if (lang === "php") return `echo "${a}";`;
+    if (lang === "java") return `System.out.println("${a}");`;
+    if (lang === "csharp") return `Console.WriteLine("${a}");`;
+    if (lang === "cpp") return `std::cout << "${a}" << std::endl;`;
+    if (lang === "ruby") return `puts "${a}"`;
+    if (lang === "go") return `fmt.Println("${a}")`;
+  }
+
+  if (type === "variable") {
+    if (lang === "js") return `let ${a} = ${b};`;
+    if (lang === "python") return `${a} = ${b}`;
+    if (lang === "php") return `$${a} = ${b};`;
+    if (lang === "java") return `int ${a} = ${b};`;
+    if (lang === "csharp") return `int ${a} = ${b};`;
+    if (lang === "cpp") return `int ${a} = ${b};`;
+    if (lang === "ruby") return `${a} = ${b}`;
+    if (lang === "go") return `var ${a} = ${b}`;
+  }
+
+  if (type === "for") {
+    if (lang === "js") return `for (let i = 0; i < ${a}; i++) {\n  console.log(i);\n}`;
+    if (lang === "python") return `for i in range(${a}):\n  print(i)`;
+    if (lang === "php") return `for ($i = 0; $i < ${a}; $i++) {\n  echo $i;\n}`;
+    if (lang === "java") return `for (int i = 0; i < ${a}; i++) {\n  System.out.println(i);\n}`;
+    if (lang === "csharp") return `for (int i = 0; i < ${a}; i++) {\n  Console.WriteLine(i);\n}`;
+    if (lang === "cpp") return `for (int i = 0; i < ${a}; i++) {\n  std::cout << i << std::endl;\n}`;
+    if (lang === "ruby") return `${a}.times do |i|\n  puts i\nend`;
+    if (lang === "go") return `for i := 0; i < ${a}; i++ {\n  fmt.Println(i)\n}`;
+  }
+
+  if (type === "function") {
+    if (lang === "js") return `function ${a}(${b}) {\n  // code\n}`;
+    if (lang === "python") return `def ${a}(${b}):\n  # code`;
+    if (lang === "php") return `function ${a}(${b}) {\n  // code\n}`;
+    if (lang === "java") return `public static void ${a}(${b}) {\n  // code\n}`;
+    if (lang === "csharp") return `public static void ${a}(${b}) {\n  // code\n}`;
+    if (lang === "cpp") return `void ${a}(${b}) {\n  // code\n}`;
+    if (lang === "ruby") return `def ${a}(${b})\n  # code\nend`;
+    if (lang === "go") return `func ${a}(${b}) {\n  // code\n}`;
+  }
+
+  if (type === "html_div") return `<div></div>`;
+  if (type === "html_button") return `<button>زر</button>`;
+  if (type === "css_bg_red") return `background-color: red;`;
+  if (type === "css_font_size") return `font-size: ${a}px;`;
+  if (type === "dom_get_by_id") return `document.getElementById("${a}");`;
+  if (type === "api_fetch") return `fetch("${a}")\n  .then(res => res.json())\n  .then(data => console.log(data));`;
+  if (type === "sql_create_table") return `CREATE TABLE ${a} (\n  id INT PRIMARY KEY AUTO_INCREMENT,\n  name VARCHAR(255)\n);`;
+  if (type === "project_basic") {
+    return `
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مشروع جاهز</title>
+<style>
+  body { font-family: Arial, sans-serif; background:#0b1220; color:#e9ecef; }
+  .container { max-width: 900px; margin: 0 auto; padding:20px; }
+  .card { background:#111a2b; padding:20px; border-radius:16px; }
+  button { padding:10px 15px; border:none; border-radius:10px; background:#2a69ff; color:#fff; cursor:pointer; }
+</style>
+</head>
 <body>
-  <h1>عنوان</h1>
+<div class="container">
+  <div class="card">
+    <h1>مشروع جاهز</h1>
+    <button onclick="alert('تم!')">اضغط هنا</button>
+  </div>
+</div>
+<script>
+  console.log("مشروع جاهز");
+</script>
 </body>
 </html>`;
-    }
   }
 
-  // CSS
-  if(mode === "css"){
-    if(input.includes("خلفية") || input.includes("background")){
-      return document.getElementById("output").innerText =
-`body {
-  background: #0b1020;
-  color: #fff;
-}`;
-    }
+  if (type.startsWith("huge_")) {
+    return "// أمر كبير موجود لكن لم يتم تعريفه فعلياً (يمكنك إضافة كود هنا)";
   }
 
-  // DOM
-  if(mode === "dom"){
-    if(input.includes("زر") && input.includes("اضغط") && input.includes("يغير")){
-      return document.getElementById("output").innerText =
-`<button id="btn">اضغط</button>
-<p id="text">نص</p>
-
-<script>
-  document.getElementById('btn').addEventListener('click', () => {
-    document.getElementById('text').innerText = 'تم التغيير';
-  });
-</script>`;
-    }
-  }
-
-  // API
-  if(mode === "api"){
-    if(input.includes("اطلب") || input.includes("استدعاء")){
-      const url = input.match(/https?:\/\/\S+/)[0];
-      return document.getElementById("output").innerText =
-`fetch("${url}")
-  .then(res => res.json())
-  .then(data => console.log(data));`;
-    }
-  }
-
-  // SQL
-  if(mode === "sql"){
-    if(input.includes("جدول") && input.includes("انشئ")){
-      const table = input.match(/جدول\s+(\w+)/)[1];
-      return document.getElementById("output").innerText =
-`CREATE TABLE ${table} (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  name VARCHAR(255)
-);`;
-    }
-  }
-
-  document.getElementById("output").innerText = "// لا يوجد تحويل لهذا الأمر";
+  return "// لا يوجد تحويل لهذا الأمر";
 }
 
-function generate(type, lang, a, b){
-  if(type === "print"){
-    if(lang === "js") return `console.log(${a});`;
-    if(lang === "python") return `print(${a})`;
-    if(lang === "php") return `<?php\necho ${a};\n?>`;
-    if(lang === "java") return `System.out.println(${a});`;
-    if(lang === "csharp") return `Console.WriteLine(${a});`;
-    if(lang === "cpp") return `std::cout << ${a} << std::endl;`;
-    if(lang === "ruby") return `puts ${a}`;
-    if(lang === "go") return `fmt.Println(${a})`;
-  }
-
-  if(type === "variable"){
-    if(lang === "js") return `let ${a} = ${b};`;
-    if(lang === "python") return `${a} = ${b}`;
-    if(lang === "php") return `<?php\n$${a} = ${b};\n?>`;
-    if(lang === "java") return `int ${a} = ${b};`;
-    if(lang === "csharp") return `int ${a} = ${b};`;
-    if(lang === "cpp") return `int ${a} = ${b};`;
-    if(lang === "ruby") return `${a} = ${b}`;
-    if(lang === "go") return `var ${a} = ${b}`;
-  }
-
-  if(type === "for"){
-    if(lang === "js") return `for (let i = 0; i < ${a}; i++) {\n  console.log(i);\n}`;
-    if(lang === "python") return `for i in range(${a}):\n  print(i)`;
-    if(lang === "php") return `<?php\nfor ($i = 0; $i < ${a}; $i++) {\n  echo $i . "\\n";\n}\n?>`;
-    if(lang === "java") return `for (int i = 0; i < ${a}; i++) {\n  System.out.println(i);\n}`;
-    if(lang === "csharp") return `for (int i = 0; i < ${a}; i++) {\n  Console.WriteLine(i);\n}`;
-    if(lang === "cpp") return `for (int i = 0; i < ${a}; i++) {\n  std::cout << i << std::endl;\n}`;
-    if(lang === "ruby") return `(${a}).times do |i|\n  puts i\nend`;
-    if(lang === "go") return `for i := 0; i < ${a}; i++ {\n  fmt.Println(i)\n}`;
-  }
-}
+updateFavorites();
+showHistory();
 </script>
 
 </body>
-    </html>
+  </html>
